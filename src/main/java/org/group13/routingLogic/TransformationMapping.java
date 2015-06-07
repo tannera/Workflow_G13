@@ -4,9 +4,11 @@ import javax.jms.ConnectionFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.jms.JmsComponent;
 import org.apache.camel.converter.jaxb.JaxbDataFormat;
 import org.apache.camel.spi.DataFormat;
 import org.group13.dataObjects.Invoice;
@@ -14,24 +16,23 @@ import org.group13.dataObjects.Order;
 import org.group13.transformerBeans.ConvertToInvoiceBean;
 import org.group13.transformerBeans.ConvertToOrderBean;
 
-
 /**
  * A Camel Java DSL Router
  */
 public class TransformationMapping extends RouteBuilder {
-
-    /**
-     * Let's configure the Camel routing rules using Java code...
-     */
+	
     public void configure() {
-             // load file orders from src/data into the JMS queue
-    		// TODO implement a listener for XML, not a FTP PULL
-             from("file:src/data?noop=true&delay=5000").to("jms:incomingItems");
-     
+    	     
+    	     from("file:src/data?noop=true&delay=5000").to("jms:incomingItems");
              // content-based router
              // Separate XML from CSV Orders
              // and place them in separate channels
              from("jms:incomingItems")
+             .process(new Processor() {
+                 public void process(Exchange exchange) throws Exception {
+                     System.out.println("I got something!");   
+                 }
+             })
              .choice()
                  .when(header("CamelFileName").endsWith(".xml"))
                      .to("jms:xmlItems")  
@@ -87,14 +88,15 @@ public class TransformationMapping extends RouteBuilder {
              	.choice()
              	.when(xpath("/test"))
                      .to("jms:xmlTestOrders")
-                .otherwise().to("jms:xmlItems");
+                .otherwise().to("jms:xmlItemsApproved");
             
              // content based filter, identifying invoices from orders
-             from("jms:xmlItems")
+             from("jms:xmlItemsApproved")
            	 	.choice()
            	 	.when(xpath("/invoices"))
                    .to("jms:xmlInvoices")
-                .otherwise().to("jms:xmlOrders");
+                .otherwise()
+                .to("jms:xmlOrders");
              
              // generate neccessary JAXB objects
              JaxbDataFormat invoicesData = new JaxbDataFormat();
@@ -124,18 +126,22 @@ public class TransformationMapping extends RouteBuilder {
              .split(body().tokenizeXML("invoice","invoices")).streaming()
              .unmarshal(invoicesData)
              //.split(body())
-             .to("jms:ProcessedInvoices");
+             .to("jms:ProcessedInvoices")
+             .wireTap("jms:InvoicesTap");
              
              // get objects from orders channel, and convert to POJO list
              from("jms:xmlOrders")   
              //split into individual XML orders
-             .split(body().tokenizeXML("order","orders")).streaming()
+             .split(body()
+            		 .tokenizeXML("order","orders")).streaming()
              .unmarshal(ordersData)
-             .to("jms:ProcessedOrders");
+             .to("jms:ProcessedOrders")
+             .wireTap("jms:OrdersTap");;
              /*.process(new Processor() {
                  public void process(Exchange exchange) throws Exception {
                 	 Order order = exchange.getIn().getBody(Order.class);
-                	 System.out.println("XML Customer Order from: "+order.getCustomer());
+                	 System.out
+                	 .println("XML Customer Order from: "+order.getCustomer());
                  }
              });*/
      
