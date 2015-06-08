@@ -23,24 +23,19 @@ public class TransformationMapping extends RouteBuilder {
 	
     public void configure() {
     	     
-    	     from("file:src/data?noop=true&delay=5000").to("jms:incomingItems");
-             // content-based router
-             // Separate XML from CSV Orders
-             // and place them in separate channels
-             from("jms:incomingItems")
-             .process(new Processor() {
-                 public void process(Exchange exchange) throws Exception {
-                     System.out.println("I got something!");   
-                 }
-             })
-             .choice()
-                 .when(header("CamelFileName").endsWith(".xml"))
-                     .to("jms:xmlItems")  
-                 .when(header("CamelFileName").endsWith(".csv"))
-                     .to("jms:csvItems")
-             	  .otherwise()
-             	  	.to("jms:badFiles").
-             end();
+    	from("file:src/data?noop=true&delay=5000").to("jms:incomingItems");
+        // content-based router
+        // Separate XML from CSV Orders
+        // and place them in separate channels
+        from("jms:incomingItems") 
+        .choice()
+            .when(header("CamelFileName").endsWith(".xml"))
+                .to("jms:xmlItems")  
+            .when(header("CamelFileName").endsWith(".csv"))
+                .to("jms:csvItems")
+        	  .otherwise()
+        	  	.to("jms:badFiles").
+        end();
  
              
              // for each file type:

@@ -9,9 +9,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Order {
 	private String orderID;
+	private boolean isAvailable;
+	private String itemCode;
 	
 	@XmlElement(name = "customer")
 	private String customer;
+	
+	@XmlElement(name = "contact")
+	private String contact;
 	
 	@XmlElement(name = "description")
 	private String itemDescription;
@@ -55,5 +60,23 @@ public class Order {
 	}
 	public void setPrice(float price) {
 		this.price = price;
+	}
+	public boolean isAvailable() {
+		return isAvailable;
+	}
+	public void setAvailable(boolean isAvailable) {
+		this.isAvailable = isAvailable;
+	}
+	public String getItemCode() {
+		return itemCode;
+	}
+	public void setItemCode(String itemCode) {
+		this.itemCode = itemCode;
+	}
+	public String getContact() {
+		return contact;
+	}
+	public void setContact(String contact) {
+		this.contact = contact;
 	}
 }

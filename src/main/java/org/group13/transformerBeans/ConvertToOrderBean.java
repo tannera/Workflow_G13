@@ -21,6 +21,8 @@ public class ConvertToOrderBean {
 				order.setItemDescription(cell);
 			if (counter==2)
 				order.setItemQuantity(Integer.parseInt(cell));
+			if (counter==4)
+				order.setContact(cell);
 			counter++;
 			//}
 		}
