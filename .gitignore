@@ -1,5 +1,3 @@
 .settings/
-target/
-activemq-data/
 .DS_Store
-.metadata/
+
