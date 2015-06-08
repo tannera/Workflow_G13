@@ -20,4 +20,4 @@ Create a new Database named Procurement.
 To run:
 - Run as Java application -> MainApp
 
-
+- Disable your anti-virus when running the MainApp, Avast anti-virus blocks the SMTP port 465 and the email process won't work. 
