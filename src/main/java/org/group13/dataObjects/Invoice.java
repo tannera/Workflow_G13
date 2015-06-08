@@ -12,6 +12,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Invoice {
 	private String invoiceID;
+	private boolean isAvailable;
+	
+	@XmlElement(name = "contact")
+	private String contact;
+	
+	@XmlElement(name = "ordercode")
+	private String orderCode;
 	
 	@XmlElement(name = "customer")
 	private String customer;
@@ -23,6 +30,8 @@ public class Invoice {
 	private int itemQuantity;
 	
 	private String itemID;
+	
+	@XmlElement(name = "price")
 	private float bill;
 	
 	public String getInvoiceID(){
@@ -60,5 +69,23 @@ public class Invoice {
 	}
 	public void setBill(float price) {
 		this.bill = price;
+	}
+	public boolean isAvailable() {
+		return isAvailable;
+	}
+	public void setAvailable(boolean isAvailable) {
+		this.isAvailable = isAvailable;
+	}
+	public String getContact() {
+		return contact;
+	}
+	public void setContact(String contact) {
+		this.contact = contact;
+	}
+	public String getOrderCode() {
+		return orderCode;
+	}
+	public void setOrderCode(String orderCode) {
+		this.orderCode = orderCode;
 	}
 }

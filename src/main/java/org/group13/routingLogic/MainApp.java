@@ -38,13 +38,13 @@ public class MainApp {
  		 ConnectionFactory connectionFactory =  new ActiveMQConnectionFactory("vm://localhost");
  	         context.addComponent("jms",
  	             JmsComponent.jmsComponentAutoAcknowledge(connectionFactory));
-       	     
-         context.addRoutes(new TransformationMapping());
+ 	         
+ 	     context.addRoutes(new TransformationMapping());
          context.addRoutes(new OrderManagement());
          context.addRoutes(new InvoiceManagement());
          context.addRoutes(new DataLogging());
          context.start();
-         Thread.sleep(10000);
+         Thread.sleep(20000);
 
          // stop the CamelContext
          context.stop();
@@ -76,5 +76,34 @@ public class MainApp {
 				"Description varchar(255), "+
 				"Quantity varchar(255)"+
 			")");
+ 		
+ 		//Setup basic stock DB
+ 		// for validating whether order can be fulfilled
+ 		jdbc.execute("DROP TABLE IF EXISTS Stock");
+ 		jdbc.execute("CREATE TABLE IF NOT EXISTS Stock "+
+				"("+
+				"ID SERIAL PRIMARY KEY, "+
+				"Description varchar(255), "+
+				"ItemCode varchar(255), "+
+				"StockQuantity integer"+
+			")");
+ 		jdbc.execute("INSERT INTO Stock (Description,StockQuantity,ItemCode) "
+ 				+ "VALUES ('Samsung Monitor',7,'ASPX9'),('Laptop',7,'Z725G')");
+ 		
+ 		// Setup basic Invoice DB
+ 		// for validating incoming invoices
+ 		jdbc.execute("DROP TABLE IF EXISTS Orders");
+ 		jdbc.execute("CREATE TABLE IF NOT EXISTS Orders "+
+				"("+
+				"ID SERIAL PRIMARY KEY, "+
+				"Description varchar(255), "+
+				"Quantity integer, "+
+				"OrderCode varchar(255) "+
+			")");
+ 		jdbc.execute("INSERT INTO Orders (Description,Quantity,OrderCode) "
+ 				+ "VALUES ('Samsung Monitor',3,'ZZ11TT')"
+ 				+ ",('Laptop',2,'JJ77GR')"
+ 				+ ",('Laptop',2,'NOTINVOICED')");
     }
 }
+

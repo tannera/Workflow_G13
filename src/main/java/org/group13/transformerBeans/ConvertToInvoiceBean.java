@@ -21,6 +21,12 @@ public class ConvertToInvoiceBean {
 				invoice.setItemDescription(	cell);
 			if (counter==2)
 				invoice.setItemQuantity(Integer.parseInt(cell));
+			if (counter==4)
+				invoice.setContact(cell);
+			if (counter==5)
+				invoice.setBill(Float.parseFloat(cell));
+			if (counter==6)
+				invoice.setOrderCode(cell);
 			counter++;
 			//}
 		}

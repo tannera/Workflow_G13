@@ -165,6 +165,16 @@
     </dependency>
 
 
+    <dependency>
+    	<groupId>org.apache.camel</groupId>
+    	<artifactId>camel-ftp</artifactId>
+    	<version>2.15.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.camel</groupId>
+    	<artifactId>camel-mail</artifactId>
+    	<version>2.15.2</version>
+    </dependency>
   </dependencies>
 
   <build>

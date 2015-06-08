@@ -2,7 +2,26 @@
 <orders>
 	<order>
 		<customer> Some ordering customer </customer>
+		<contact> info@scustomer.com </contact>
 		<description> Laptop </description>
-		<quantity> 22 </quantity>
+		<quantity> 6 </quantity>
+	</order>
+	<order>
+		<customer> Some ordering customer </customer>
+		<contact> info@scustomer.com </contact>
+		<description> Samsung Monitor </description>
+		<quantity> 1 </quantity>
+	</order>
+	<order>
+		<customer> Another customer </customer>
+		<contact> info@acustomer.com </contact>
+		<description> Laptop </description>
+		<quantity> 32 </quantity>
+	</order>
+	<order>
+		<customer> Another customer </customer>
+		<contact> info@acustomer.com </contact>
+		<description> PC </description>
+		<quantity> 5 </quantity>
 	</order>
 </orders>

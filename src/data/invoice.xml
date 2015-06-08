@@ -1,7 +1,10 @@
 <invoices>
 	<invoice>
 		<customer> Some customer </customer>
+		<contact> info@scustomer.com </contact>
 		<description> Laptop </description>
-		<quantity> 32 </quantity>
+		<quantity> 2 </quantity>
+		<price> 19.99 </price>
+		<ordercode> JJ77GR </ordercode>
 	</invoice>
 </invoices>
