@@ -44,10 +44,6 @@ public class MainApp {
          context.addRoutes(new InvoiceManagement());
          context.addRoutes(new DataLogging());
          context.start();
-         Thread.sleep(20000);
-
-         // stop the CamelContext
-         context.stop();
     }
     private static DataSource setupDataSource(String connectURI) {
     	 BasicDataSource ds = new BasicDataSource();
@@ -67,6 +63,14 @@ public class MainApp {
 				"Company varchar(255) NOT NULL, "+
 				"Description varchar(255), "+
 				"Quantity varchar(255)"+
+			")");
+ 		jdbc.execute("CREATE TABLE IF NOT EXISTS Error_log "+
+				"("+
+				"ID SERIAL PRIMARY KEY, "+
+				"Time_inserted timestamp default current_timestamp, "+
+				"Type varchar(255) NOT NULL, "+
+				"Filename varchar(255) NOT NULL, "+
+				"Content varchar(255) "+
 			")");
  		jdbc.execute("CREATE TABLE IF NOT EXISTS Invoices_log "+
 				"("+
@@ -106,4 +110,3 @@ public class MainApp {
  				+ ",('Laptop',2,'NOTINVOICED')");
     }
 }
-

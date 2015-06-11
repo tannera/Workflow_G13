@@ -39,5 +39,36 @@ public class DataLogging extends RouteBuilder{
 	            }
 	        })
 	     .to("jdbc:ProcurementDB");
+		
+		from("jms:xmlTestOrders")
+	    .process(new Processor() {
+	            public void process(Exchange exchange) throws Exception {
+	           	exchange.getIn().setBody("INSERT INTO Error_log (type,filename,content) "
+	           			+ "VALUES('Test File','"
+	           					+ exchange.getIn().getHeader("CamelFileName") +"'"
+	           							+ ",'N/A');");
+	            }
+	        })
+		.to("jdbc:ProcurementDB");
+		
+		//these objects are not recognized
+		from("jms:badObjects").process(new Processor() {
+            public void process(Exchange exchange) throws Exception {
+            	exchange.getIn().setBody("INSERT INTO Error_log (type,filename,content) "
+	           			+ "VALUES('Wrong format Object','"
+	           					+ exchange.getIn().getHeader("CamelFileName") +"'"
+	           							+ ",'"+exchange.getIn().getBody()+"');");
+            }
+        }).to("jdbc:ProcurementDB");
+		
+		// initial 
+        from("jms:badFiles").process(new Processor() {
+            public void process(Exchange exchange) throws Exception {
+            	exchange.getIn().setBody("INSERT INTO Error_log (type,filename,content) "
+	           			+ "VALUES('Wrong Format File','"
+	           					+ exchange.getIn().getHeader("CamelFileName") +"'"
+	           							+ ",'N/A');");
+	            }
+        }).to("jdbc:ProcurementDB");
 	}
 }

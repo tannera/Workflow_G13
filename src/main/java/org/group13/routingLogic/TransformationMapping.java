@@ -20,22 +20,24 @@ import org.group13.transformerBeans.ConvertToOrderBean;
  * A Camel Java DSL Router
  */
 public class TransformationMapping extends RouteBuilder {
+
 	
     public void configure() {
+             // load file orders from src/data into the JMS queue
     	     
-    	from("file:src/data?noop=true&delay=5000").to("jms:incomingItems");
-        // content-based router
-        // Separate XML from CSV Orders
-        // and place them in separate channels
-        from("jms:incomingItems") 
-        .choice()
-            .when(header("CamelFileName").endsWith(".xml"))
-                .to("jms:xmlItems")  
-            .when(header("CamelFileName").endsWith(".csv"))
-                .to("jms:csvItems")
-        	  .otherwise()
-        	  	.to("jms:badFiles").
-        end();
+    	     from("file:src/data?noop=true&delay=5000").to("jms:incomingItems");
+             // content-based router
+             // Separate XML from CSV Orders
+             // and place them in separate channels
+             from("jms:incomingItems") 
+             .choice()
+                 .when(header("CamelFileName").endsWith(".xml"))
+                     .to("jms:xmlItems")  
+                 .when(header("CamelFileName").endsWith(".csv"))
+                     .to("jms:csvItems")
+             	  .otherwise()
+             	  	.to("jms:badFiles").
+             end();
  
              
              // for each file type:
@@ -131,42 +133,6 @@ public class TransformationMapping extends RouteBuilder {
             		 .tokenizeXML("order","orders")).streaming()
              .unmarshal(ordersData)
              .to("jms:ProcessedOrders")
-             .wireTap("jms:OrdersTap");;
-             /*.process(new Processor() {
-                 public void process(Exchange exchange) throws Exception {
-                	 Order order = exchange.getIn().getBody(Order.class);
-                	 System.out
-                	 .println("XML Customer Order from: "+order.getCustomer());
-                 }
-             });*/
-     
-             
-             
-             
-             // get test messages from TestOrders 
-             from("jms:xmlTestOrders")           
-             .process(new Processor() {
-                 public void process(Exchange exchange) throws Exception {
-                     System.out.println("Test Order Recieved!   " 
-                             + exchange.getIn().getHeader("CamelFileName"));   
-                 }
-             });
-             
-             
-             //these objects are not recognized
-             from("jms:badObjects").process(new Processor() {
-                 public void process(Exchange exchange) throws Exception {
-                     System.out.println("Received invalid Object: " 
-                             + exchange.getIn().getBody());   
-                 }
-             });
-             
-             // initial 
-             from("jms:badFiles").process(new Processor() {
-                 public void process(Exchange exchange) throws Exception {
-                     System.out.println("Received invalid order: " 
-                             + exchange.getIn().getHeader("CamelFileName"));   
-                 }
-             });
+             .wireTap("jms:OrdersTap");
          }
 }
