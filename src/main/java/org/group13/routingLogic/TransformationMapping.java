@@ -131,7 +131,7 @@ public class TransformationMapping extends RouteBuilder {
             		 .tokenizeXML("order","orders")).streaming()
              .unmarshal(ordersData)
              .to("jms:ProcessedOrders")
-             .wireTap("jms:OrdersTap");;
+             .wireTap("jms:OrdersTap");
              /*.process(new Processor() {
                  public void process(Exchange exchange) throws Exception {
                 	 Order order = exchange.getIn().getBody(Order.class);

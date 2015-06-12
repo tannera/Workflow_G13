@@ -35,6 +35,8 @@ public class InvoiceManagement extends RouteBuilder{
         .bean(InvoiceRouter.class)
         .recipientList(header("recipients"));
 		 
+		// email service
+		 
 		 from("jms:Accounting")
 	        .process(new Processor() {
 	            public void process(Exchange exchange) throws Exception {
